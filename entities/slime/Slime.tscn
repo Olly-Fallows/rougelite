@@ -1,0 +1,91 @@
+[gd_scene load_steps=11 format=3 uid="uid://ctwt4g2834stj"]
+
+[ext_resource type="Script" uid="uid://ddu3adcn2hvb5" path="res://scripts/components/Entity.gd" id="1_lyvpf"]
+[ext_resource type="Script" uid="uid://dgr0jgccveadn" path="res://scripts/components/StateMachine.gd" id="1_p1nqj"]
+[ext_resource type="Script" uid="uid://dtfh4nb3iiqrg" path="res://entities/slime/walk.gd" id="2_jfdxm"]
+[ext_resource type="Texture2D" uid="uid://bvqy4kih0tdby" path="res://assets/graphics/entities/mobs/slime.png" id="3_jfdxm"]
+[ext_resource type="Script" uid="uid://bpdsroysbgbqn" path="res://entities/slime/hurt.gd" id="3_lyvpf"]
+[ext_resource type="Script" uid="uid://tdd0bf877gh8" path="res://entities/slime/dead.gd" id="4_cq5x8"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_p1nqj"]
+atlas = ExtResource("3_jfdxm")
+region = Rect2(0, 16, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_lyvpf"]
+atlas = ExtResource("3_jfdxm")
+region = Rect2(0, 0, 16, 16)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_cq5x8"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_p1nqj")
+}],
+"loop": false,
+"name": &"Hurt",
+"speed": 2.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_lyvpf")
+}],
+"loop": true,
+"name": &"idle",
+"speed": 5.0
+}]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_lyvpf"]
+size = Vector2(16, 16)
+
+[node name="Slime" type="CharacterBody2D"]
+collision_layer = 4
+script = ExtResource("1_lyvpf")
+speed = 50.0
+
+[node name="StateMachine" type="Node" parent="." node_paths=PackedStringArray("root", "default_state")]
+script = ExtResource("1_p1nqj")
+root = NodePath("..")
+default_state = NodePath("Walk")
+metadata/_custom_type_script = "uid://dgr0jgccveadn"
+
+[node name="Walk" type="Node" parent="StateMachine"]
+script = ExtResource("2_jfdxm")
+metadata/_custom_type_script = "uid://bhsff4w6jkk3e"
+
+[node name="Timer" type="Timer" parent="StateMachine/Walk"]
+wait_time = 0.05
+autostart = true
+
+[node name="Hurt" type="Node" parent="StateMachine"]
+script = ExtResource("3_lyvpf")
+metadata/_custom_type_script = "uid://bhsff4w6jkk3e"
+
+[node name="Dead" type="Node" parent="StateMachine"]
+script = ExtResource("4_cq5x8")
+metadata/_custom_type_script = "uid://bhsff4w6jkk3e"
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+position = Vector2(0, -8)
+sprite_frames = SubResource("SpriteFrames_cq5x8")
+animation = &"idle"
+autoplay = "idle"
+
+[node name="Right" type="RayCast2D" parent="."]
+position = Vector2(7, 0)
+target_position = Vector2(0, 1)
+
+[node name="Left" type="RayCast2D" parent="."]
+position = Vector2(-7, 0)
+target_position = Vector2(0, 1)
+
+[node name="RightWalk" type="RayCast2D" parent="."]
+position = Vector2(8, -1)
+target_position = Vector2(1, 0)
+
+[node name="LeftWalk" type="RayCast2D" parent="."]
+position = Vector2(-8, -1)
+target_position = Vector2(-1, 0)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, -8)
+shape = SubResource("RectangleShape2D_lyvpf")

@@ -1,0 +1,97 @@
+[gd_scene load_steps=18 format=3 uid="uid://3eqjj442pu3d"]
+
+[ext_resource type="Script" uid="uid://csf6jdxnm6c30" path="res://entities/player/player.gd" id="1_2a181"]
+[ext_resource type="Script" uid="uid://dgr0jgccveadn" path="res://scripts/components/StateMachine.gd" id="1_mab2k"]
+[ext_resource type="Script" uid="uid://hqm01drhuwcy" path="res://entities/player/idle.gd" id="2_4pwj0"]
+[ext_resource type="Script" uid="uid://go6u6g5063or" path="res://scripts/components/Health.gd" id="2_l3c03"]
+[ext_resource type="Script" uid="uid://cy8bptc0q3noq" path="res://scripts/components/Hurtbox.gd" id="3_eaotn"]
+[ext_resource type="Script" uid="uid://drff221kwuadj" path="res://entities/player/run.gd" id="3_kwk8g"]
+[ext_resource type="Script" uid="uid://0tbhrcqtymqb" path="res://entities/player/jump.gd" id="4_2a181"]
+[ext_resource type="SpriteFrames" uid="uid://bg1bq8yeptliq" path="res://assets/graphics/entities/player/body.tres" id="4_eaotn"]
+[ext_resource type="Script" uid="uid://crej47fqoyar8" path="res://entities/player/fall.gd" id="5_aubru"]
+[ext_resource type="Script" uid="uid://cncap4nd7401k" path="res://entities/player/land.gd" id="6_ax5yc"]
+[ext_resource type="Script" uid="uid://b1aox44am6ffl" path="res://entities/player/hurt.gd" id="7_j531f"]
+[ext_resource type="Script" uid="uid://6gbxino5irkd" path="res://entities/player/dead.gd" id="8_npcl8"]
+[ext_resource type="Script" uid="uid://nmfegw88ccs3" path="res://entities/player/wall_slide.gd" id="9_4fbvh"]
+[ext_resource type="Script" uid="uid://ct48gepsca8yg" path="res://entities/player/stopping.gd" id="10_ux552"]
+[ext_resource type="Script" uid="uid://cwtavynha4h" path="res://entities/player/dodge.gd" id="11_3uni3"]
+[ext_resource type="Script" uid="uid://bhsff4w6jkk3e" path="res://scripts/components/State.gd" id="13_aubru"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_eaotn"]
+size = Vector2(6, 14)
+
+[node name="Player" type="CharacterBody2D"]
+collision_layer = 2
+script = ExtResource("1_2a181")
+
+[node name="StateMachine" type="Node" parent="." node_paths=PackedStringArray("root", "default_state")]
+script = ExtResource("1_mab2k")
+root = NodePath("..")
+default_state = NodePath("Idle")
+metadata/_custom_type_script = "uid://dgr0jgccveadn"
+
+[node name="Idle" type="Node" parent="StateMachine"]
+script = ExtResource("2_4pwj0")
+metadata/_custom_type_script = "uid://bqvw0nsnnv1my"
+
+[node name="Run" type="Node" parent="StateMachine"]
+script = ExtResource("3_kwk8g")
+metadata/_custom_type_script = "uid://bqvw0nsnnv1my"
+
+[node name="Jump" type="Node" parent="StateMachine"]
+script = ExtResource("4_2a181")
+metadata/_custom_type_script = "uid://bqvw0nsnnv1my"
+
+[node name="Fall" type="Node" parent="StateMachine"]
+script = ExtResource("5_aubru")
+metadata/_custom_type_script = "uid://bqvw0nsnnv1my"
+
+[node name="Land" type="Node" parent="StateMachine"]
+script = ExtResource("6_ax5yc")
+metadata/_custom_type_script = "uid://bqvw0nsnnv1my"
+
+[node name="Hurt" type="Node" parent="StateMachine"]
+script = ExtResource("7_j531f")
+metadata/_custom_type_script = "uid://bqvw0nsnnv1my"
+
+[node name="Dead" type="Node" parent="StateMachine"]
+script = ExtResource("8_npcl8")
+metadata/_custom_type_script = "uid://bqvw0nsnnv1my"
+
+[node name="WallSlide" type="Node" parent="StateMachine"]
+script = ExtResource("9_4fbvh")
+metadata/_custom_type_script = "uid://bqvw0nsnnv1my"
+
+[node name="Stopping" type="Node" parent="StateMachine"]
+script = ExtResource("10_ux552")
+metadata/_custom_type_script = "uid://bqvw0nsnnv1my"
+
+[node name="Dodge" type="Node" parent="StateMachine"]
+script = ExtResource("11_3uni3")
+metadata/_custom_type_script = "uid://bqvw0nsnnv1my"
+
+[node name="Attack" type="Node" parent="StateMachine"]
+script = ExtResource("13_aubru")
+metadata/_custom_type_script = "uid://bhsff4w6jkk3e"
+
+[node name="Health" type="Node" parent="."]
+script = ExtResource("2_l3c03")
+metadata/_custom_type_script = "uid://go6u6g5063or"
+
+[node name="Hurtbox" type="Area2D" parent="Health"]
+collision_layer = 2
+collision_mask = 5
+script = ExtResource("3_eaotn")
+metadata/_custom_type_script = "uid://cy8bptc0q3noq"
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+position = Vector2(0, -16)
+sprite_frames = ExtResource("4_eaotn")
+animation = &"idle"
+autoplay = "idle"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, -7)
+shape = SubResource("RectangleShape2D_eaotn")
+
+[node name="Camera2D" type="Camera2D" parent="."]
